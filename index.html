@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>HydroPal - Water Reminder</title>
+
+    <!-- PWA Manifest & Theme -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#0f172a" />
+
+    <!-- Apple PWA Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="HydroPal">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+      }
+    </script>
+    <style>
+      :root {
+        --bg-color: #f0f4f8;
+        --text-primary: #1e293b;
+        --text-secondary: #475569;
+        --pod-bg: rgba(255, 255, 255, 0.6);
+        --pod-border: rgba(255, 255, 255, 0.3);
+        --pod-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        --modal-bg: rgba(248, 250, 252, 0.75);
+        --input-bg: rgba(255, 255, 255, 0.7);
+        --glow-color: #0ea5e9;
+      }
+
+      .dark {
+        --bg-color: #0f172a;
+        --text-primary: #e2e8f0;
+        --text-secondary: #94a3b8;
+        --pod-bg: rgba(22, 33, 56, 0.5);
+        --pod-border: rgba(56, 75, 117, 0.3);
+        --pod-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        --modal-bg: rgba(15, 23, 42, 0.75);
+        --input-bg: rgba(30, 41, 59, 0.7);
+        --glow-color: #38bdf8;
+      }
+
+      @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+      }
+      
+      @keyframes particle-float {
+        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+      }
+
+      @keyframes aurora-glow {
+        0% { box-shadow: 0 0 10px 0px var(--glow-color), 0 0 20px 0px var(--glow-color) inset; }
+        50% { box-shadow: 0 0 20px 5px var(--glow-color), 0 0 40px 10px var(--glow-color) inset; }
+        100% { box-shadow: 0 0 10px 0px var(--glow-color), 0 0 20px 0px var(--glow-color) inset; }
+      }
+
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        background-color: var(--bg-color);
+        transition: background-color 0.5s ease;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow: hidden;
+      }
+      
+      #particle-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: -1;
+      }
+
+      .particle {
+        position: absolute;
+        bottom: -20px;
+        background: var(--text-secondary);
+        border-radius: 50%;
+        animation-name: particle-float;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+      }
+      
+      .floating-pod {
+        background-color: var(--pod-bg);
+        backdrop-filter: blur(25px) saturate(160%);
+        -webkit-backdrop-filter: blur(25px) saturate(160%);
+        border: 1px solid var(--pod-border);
+        box-shadow: var(--pod-shadow);
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+      }
+      .floating-pod:hover {
+        transform: translateY(-6px) scale(1.02);
+      }
+
+      .satellite-pod {
+        position: absolute;
+        z-index: 10;
+        width: 64px;
+        height: 64px;
+      }
+
+      .satellite-pod:hover {
+        transform: translateY(-4px) scale(1.1);
+      }
+
+      @keyframes wave {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-100%); }
+      }
+      .water-wave {
+        animation: wave 2s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
+      }
+
+      @keyframes rise {
+        from { opacity: 0; transform: translateY(0); }
+        50% { opacity: 1; }
+        to { opacity: 0; transform: translateY(-100px); }
+      }
+      .bubble {
+        position: absolute;
+        background-color: rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+        opacity: 0;
+        animation: rise 1.2s ease-in forwards;
+      }
+
+      .glass-modal, .settings-modal-content {
+        background-color: var(--modal-bg);
+        color: var(--text-primary);
+        backdrop-filter: blur(30px) saturate(180%);
+        -webkit-backdrop-filter: blur(30px) saturate(180%);
+        border: 1px solid var(--pod-border);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "react": "https://esm.sh/react@^19.1.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.10.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="particle-container"></div>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+    <script>
+      // Particle generator
+      const particleContainer = document.getElementById('particle-container');
+      const particleCount = 20;
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        const size = Math.random() * 4 + 1;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.animationDuration = `${Math.random() * 20 + 15}s`;
+        particle.style.animationDelay = `${Math.random() * 15}s`;
+        particleContainer.appendChild(particle);
+      }
+    </script>
+  </body>
+</html>
