@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ReminderStatus } from '../types.ts';
 
@@ -9,7 +8,7 @@ interface WaterProgressProps {
   status: ReminderStatus;
 }
 
-const WaterProgress: React.FC<WaterProgressProps> = ({ intake, goal, timeLeft, status }) => {
+export const WaterProgress: React.FC<WaterProgressProps> = ({ intake, goal, timeLeft, status }) => {
   const radius = 80;
   const stroke = 12;
   const normalizedRadius = radius - stroke * 2;
@@ -62,5 +61,3 @@ const WaterProgress: React.FC<WaterProgressProps> = ({ intake, goal, timeLeft, s
     </div>
   );
 };
-
-export default WaterProgress;
