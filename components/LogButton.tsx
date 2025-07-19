@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { WATER_LOG_AMOUNT_ML } from '../constants.ts';
 
@@ -12,7 +11,7 @@ interface LogButtonProps {
   disabled: boolean;
 }
 
-const LogButton: React.FC<LogButtonProps> = ({ onLog, disabled }) => {
+export const LogButton: React.FC<LogButtonProps> = ({ onLog, disabled }) => {
   return (
     <button
       onClick={onLog}
@@ -30,5 +29,3 @@ const LogButton: React.FC<LogButtonProps> = ({ onLog, disabled }) => {
     </button>
   );
 };
-
-export default LogButton;
