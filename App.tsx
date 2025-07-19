@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ReminderStatus, NotificationPermission, Settings } from './types.ts';
 import { WATER_LOG_AMOUNT_ML, DEFAULT_GOAL_ML, REMINDER_INTERVALS_MIN } from './constants.ts';
 import { requestPermission, sendNotification } from './services/notificationService.ts';
+import { saveState, loadState } from './services/storageService.ts';
 
 import { Header } from './components/Header.tsx';
 import { WaterProgress } from './components/WaterProgress.tsx';
@@ -10,15 +11,22 @@ import { Controls } from './components/Controls.tsx';
 import { HydrationTip } from './components/HydrationTip.tsx';
 
 export const App: React.FC = () => {
-  const [status, setStatus] = useState<ReminderStatus>(ReminderStatus.Stopped);
-  const [intake, setIntake] = useState<number>(0);
-  const [settings, setSettings] = useState<Settings>({
+  // Load state from localStorage on initial render, or use defaults
+  const [intake, setIntake] = useState<number>(() => loadState()?.intake ?? 0);
+  const [settings, setSettings] = useState<Settings>(() => loadState()?.settings ?? {
     interval: 60,
     goal: DEFAULT_GOAL_ML,
   });
+
+  const [status, setStatus] = useState<ReminderStatus>(ReminderStatus.Stopped);
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>(NotificationPermission.Default);
   const [timeLeft, setTimeLeft] = useState<number>(settings.interval * 60);
   const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
+
+  // Effect to save state to localStorage whenever intake or settings change
+  useEffect(() => {
+    saveState({ intake, settings });
+  }, [intake, settings]);
 
   useEffect(() => {
     if ('Notification' in window) {
