@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { getHydrationFact } from '../services/geminiService.ts';
 
@@ -6,7 +5,7 @@ const LightbulbIcon: React.FC<{className?: string}> = ({ className }) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M15.09 16.05A6.49 6.49 0 0 1 8.95 9.91a6.5 6.5 0 0 1 6.14-5.9V2h-2v2.05A8.5 8.5 0 0 0 5 12.5c0 4.42 3.58 8 8 8s8-3.58 8-8c0-1.09-.22-2.14-.62-3.09"></path><path d="M12 21a2 2 0 0 0 2-2H10a2 2 0 0 0 2 2Z"></path></svg>
 );
 
-const HydrationTip: React.FC = () => {
+export const HydrationTip: React.FC = () => {
   const [tip, setTip] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
@@ -71,5 +70,3 @@ const HydrationTip: React.FC = () => {
     </>
   );
 };
-
-export default HydrationTip;
