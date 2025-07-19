@@ -15,14 +15,7 @@ export interface Settings {
   goal: number; // in ml
 }
 
-export interface WaterLog {
-  id?: number;
-  amount: number;
-  timestamp: number;
-}
-
-export interface DailyReportData {
-    day: string; // e.g., 'Mon'
-    intake: number;
-    goal: number;
+export interface StoredState {
+  intake: number;
+  settings: Settings;
 }
