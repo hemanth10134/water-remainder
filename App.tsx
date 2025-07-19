@@ -1,16 +1,15 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { ReminderStatus, NotificationPermission, Settings } from './types.ts';
 import { WATER_LOG_AMOUNT_ML, DEFAULT_GOAL_ML, REMINDER_INTERVALS_MIN } from './constants.ts';
 import { requestPermission, sendNotification } from './services/notificationService.ts';
 
-import Header from './components/Header.tsx';
-import WaterProgress from './components/WaterProgress.tsx';
-import LogButton from './components/LogButton.tsx';
-import Controls from './components/Controls.tsx';
-import HydrationTip from './components/HydrationTip.tsx';
+import { Header } from './components/Header.tsx';
+import { WaterProgress } from './components/WaterProgress.tsx';
+import { LogButton } from './components/LogButton.tsx';
+import { Controls } from './components/Controls.tsx';
+import { HydrationTip } from './components/HydrationTip.tsx';
 
-const App: React.FC = () => {
+export const App: React.FC = () => {
   const [status, setStatus] = useState<ReminderStatus>(ReminderStatus.Stopped);
   const [intake, setIntake] = useState<number>(0);
   const [settings, setSettings] = useState<Settings>({
@@ -128,5 +127,3 @@ const App: React.FC = () => {
     </div>
   );
 };
-
-export default App;
